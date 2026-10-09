@@ -10,6 +10,8 @@ struct NudgeDock: View {
 
     var body: some View {
         Group {
+            // TEMP_XCODE16_BRIDGE: see GlassSurface.swift — enable with -D RUMI_HAS_IOS26_SDK after Xcode upgrade.
+#if RUMI_HAS_IOS26_SDK
             if #available(iOS 26.0, *) {
                 // Warm navigation glass stays separate from opaque content.
                 bar
@@ -26,6 +28,9 @@ struct NudgeDock: View {
             } else {
                 GlassSurface(radius: 34) { bar }
             }
+#else
+            GlassSurface(radius: 34) { bar }
+#endif
         }
         .padding(.horizontal, 18)
         .shadow(color: Theme.shadow.opacity(0.12), radius: 16, y: 6)

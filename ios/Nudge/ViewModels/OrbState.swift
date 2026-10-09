@@ -1,6 +1,8 @@
 import SwiftUI
 
 /// The companion's living state. Modes morph continuously — never cut.
+/// TEMP_XCODE16_BRIDGE: explicit MainActor for consistent isolation on Xcode 16.
+@MainActor
 @Observable final class OrbState {
     enum Mode: Equatable {
         case ambient, listening, thinking, speaking, celebrating, concerned, resting

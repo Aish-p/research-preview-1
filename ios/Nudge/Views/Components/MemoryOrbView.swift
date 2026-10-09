@@ -54,6 +54,8 @@ struct MemoryOrbGlass: View {
                 .frame(width: size, height: size)
                 .clipShape(.circle)
 
+            // TEMP_XCODE16_BRIDGE: see GlassSurface.swift — enable with -D RUMI_HAS_IOS26_SDK after Xcode upgrade.
+#if RUMI_HAS_IOS26_SDK
             if #available(iOS 26.0, *) {
                 // The real lens — native Liquid Glass refracting the photo.
                 Color.clear
@@ -62,6 +64,10 @@ struct MemoryOrbGlass: View {
             } else {
                 legacyShading
             }
+#else
+            legacyShading
+#endif
+
         }
         .overlay(
             Circle().strokeBorder(

@@ -25,6 +25,8 @@ struct LivingGradientView: View {
             }
         }
         .ignoresSafeArea()
+        // Decorative only — never steal taps from onboarding/buttons above.
+        .allowsHitTesting(false)
         .accessibilityHidden(true)
     }
 }

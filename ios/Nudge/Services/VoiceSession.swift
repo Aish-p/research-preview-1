@@ -8,6 +8,8 @@ nonisolated private struct VoiceScribeResponse: Codable {
 /// The hands-free voice conversation loop: the mic opens, silence detection
 /// commits the turn, ElevenLabs Scribe transcribes through the private backend,
 /// Claude answers, and the backend speaks with the project's custom voice.
+/// TEMP_XCODE16_BRIDGE: explicit MainActor so this matches ChatTransport/AppModel isolation on Xcode 16.
+@MainActor
 @Observable final class VoiceSession {
     enum Phase: Equatable {
         case idle

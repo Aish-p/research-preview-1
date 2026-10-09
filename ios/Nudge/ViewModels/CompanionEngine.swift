@@ -2,6 +2,8 @@ import Foundation
 import Observation
 
 /// Durable scenario chat with explicit interruption and request ownership. Generated text never executes external actions.
+/// TEMP_XCODE16_BRIDGE: explicit MainActor (matches ChatTransport / newer Xcode defaults).
+@MainActor
 @Observable final class CompanionEngine {
     var turns: [ConversationTurn] = []
     var composerDraft: String = ""

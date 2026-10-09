@@ -5,6 +5,8 @@ import Observation
 /// a value shown on Today, in the Hub, in Trends and in chat is the same value
 /// with the same freshness stamp. The active persona shapes what lives inside
 /// the world without changing the world itself.
+/// TEMP_XCODE16_BRIDGE: explicit MainActor (matches ChatTransport / newer Xcode defaults).
+@MainActor
 @Observable final class AppModel {
     enum Tab: String, CaseIterable {
         case today = "Today"

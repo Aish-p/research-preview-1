@@ -46,7 +46,8 @@ struct MomentCard: View {
         .rippleOnTap(glow: 0.4)
         .melt(meltProgress)
         .offset(x: dragX)
-        .opacity(1 - min(abs(dragX) / 320, 0.5))
+        // TEMP_XCODE16_BRIDGE: disambiguate CGFloat division for older Swift overlay.
+        .opacity(1 - min(abs(dragX) / CGFloat(320), 0.5))
         .gesture(
             DragGesture()
                 .onChanged { value in

@@ -3,12 +3,17 @@ import SwiftUI
 /// Liquid-glass chrome. On iOS 26 this is true Liquid Glass; earlier systems
 /// get the layered-material equivalent. Reserved for the dock, floating chips,
 /// input bars and sheet headers — glass is seasoning, not the meal.
+///
+/// TEMP_XCODE16_BRIDGE: `.glassEffect` needs the iOS 26 SDK. Until Xcode is
+/// upgraded, build without `-D RUMI_HAS_IOS26_SDK` (material fallback). After
+/// upgrading, either add that flag in OTHER_SWIFT_FLAGS or revert this file.
 struct GlassSurface<Content: View>: View {
     var radius: CGFloat = 36
     var interactive: Bool = false
     @ViewBuilder var content: Content
 
     var body: some View {
+#if RUMI_HAS_IOS26_SDK
         if #available(iOS 26.0, *) {
             content
                 .glassEffect(
@@ -16,21 +21,28 @@ struct GlassSurface<Content: View>: View {
                     in: .rect(cornerRadius: radius, style: .continuous)
                 )
         } else {
-            content
-                .background(.ultraThinMaterial, in: .rect(cornerRadius: radius, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: radius, style: .continuous)
-                        .strokeBorder(
-                            .linearGradient(
-                                colors: [.white.opacity(0.4), .white.opacity(0.05)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
-                            lineWidth: 1
-                        )
-                )
-                .shadow(color: Theme.shadow.opacity(0.14), radius: 24, y: 8)
+            materialFallback
         }
+#else
+        materialFallback
+#endif
+    }
+
+    private var materialFallback: some View {
+        content
+            .background(.ultraThinMaterial, in: .rect(cornerRadius: radius, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: radius, style: .continuous)
+                    .strokeBorder(
+                        .linearGradient(
+                            colors: [.white.opacity(0.4), .white.opacity(0.05)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 1
+                    )
+            )
+            .shadow(color: Theme.shadow.opacity(0.14), radius: 24, y: 8)
     }
 }
 
@@ -94,14 +106,22 @@ struct ChromeIcon: View {
 /// Circular glass that is identical everywhere it appears.
 struct CircularGlass: ViewModifier {
     func body(content: Content) -> some View {
+#if RUMI_HAS_IOS26_SDK
         if #available(iOS 26.0, *) {
             content.glassEffect(.regular.interactive(), in: .circle)
         } else {
-            content
-                .background(.ultraThinMaterial, in: .circle)
-                .overlay(Circle().strokeBorder(Color.white.opacity(0.3), lineWidth: 0.8))
-                .shadow(color: Theme.shadow.opacity(0.12), radius: 10, y: 4)
+            circularFallback(content)
         }
+#else
+        circularFallback(content)
+#endif
+    }
+
+    private func circularFallback(_ content: Content) -> some View {
+        content
+            .background(.ultraThinMaterial, in: .circle)
+            .overlay(Circle().strokeBorder(Color.white.opacity(0.3), lineWidth: 0.8))
+            .shadow(color: Theme.shadow.opacity(0.12), radius: 10, y: 4)
     }
 }
 
@@ -110,6 +130,7 @@ struct CapsuleGlass: ViewModifier {
     var tint: Color? = nil
 
     func body(content: Content) -> some View {
+#if RUMI_HAS_IOS26_SDK
         if #available(iOS 26.0, *) {
             if let tint {
                 content.glassEffect(.regular.tint(tint.opacity(0.25)).interactive(), in: .capsule)
@@ -117,10 +138,17 @@ struct CapsuleGlass: ViewModifier {
                 content.glassEffect(.regular.interactive(), in: .capsule)
             }
         } else {
-            content
-                .background(.ultraThinMaterial, in: .capsule)
-                .overlay(Capsule().strokeBorder((tint ?? .white).opacity(0.3), lineWidth: 0.8))
+            capsuleFallback(content)
         }
+#else
+        capsuleFallback(content)
+#endif
+    }
+
+    private func capsuleFallback(_ content: Content) -> some View {
+        content
+            .background(.ultraThinMaterial, in: .capsule)
+            .overlay(Capsule().strokeBorder((tint ?? .white).opacity(0.3), lineWidth: 0.8))
     }
 }
 

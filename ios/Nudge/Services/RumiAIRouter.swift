@@ -2,6 +2,8 @@ import Foundation
 import Observation
 
 /// Single routing boundary for chat, contextual help and visit preparation. Never fails over providers.
+/// TEMP_XCODE16_BRIDGE: explicit MainActor (matches ChatTransport / newer Xcode defaults).
+@MainActor
 @Observable final class RumiAIRouter: ChatTransport {
     private(set) var mode: RumiAIMode = .showcase
     private(set) var settings: RumiBackendSettings = .init()
